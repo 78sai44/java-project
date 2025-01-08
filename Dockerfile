@@ -8,7 +8,7 @@ WORKDIR /app
 COPY helloworld.java /app/
 
 # Compile the Java program
-RUN javac HelloWorld.java
+RUN javac helloworld.java
 
 # Expose the port 
 EXPOSE 6000
