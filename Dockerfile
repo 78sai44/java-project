@@ -5,13 +5,13 @@ FROM openjdk:17-slim
 WORKDIR /app
 
 # Copy the Java source file into the container
-COPY HelloWorld.java .
+COPY helloworld.java /app/
 
 # Compile the Java program
 RUN javac HelloWorld.java
 
-# Expose the port (not strictly needed for Hello World, but included for practice)
-EXPOSE 8080
+# Expose the port 
+EXPOSE 6000
 
 # Define the command to run the program
-CMD ["java", "HelloWorld"]
+CMD ["java", "helloworld"]
