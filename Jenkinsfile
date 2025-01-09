@@ -32,24 +32,11 @@ pipeline {
                 script {
                     // Install Trivy if it's not already installed
                     sh '''
-                        # Check if Trivy is installed
-    if ! command -v trivy &> /dev/null; then
-        echo "Installing Trivy..."
-        
-        # Detect the system architecture and download the correct binary
-        ARCH=$(uname -m)
-        OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-        TRIVY_VERSION=$(curl -s https://api.github.com/repos/aquasecurity/trivy/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-        
-        wget -qO trivy.tar.gz "https://github.com/aquasecurity/trivy/releases/download/${TRIVY_VERSION}/trivy_${OS}_${ARCH}.tar.gz"
-        
-        # Extract and move Trivy to the appropriate directory
-        tar -xzf trivy.tar.gz
-        sudo mv trivy /usr/local/bin/
-        
-        # Clean up
-        rm trivy.tar.gz
-    fi
+                        if ! command -v trivy &> /dev/null; then
+                            echo "Installing Trivy..."
+                            wget -qO- https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_$(uname -m).tar.gz | tar xz
+                            sudo mv trivy /usr/local/bin/
+                        fi
                     '''
                     
                     // Run Trivy scan
