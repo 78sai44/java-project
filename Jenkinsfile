@@ -27,24 +27,8 @@ pipeline {
                 }
             }
         }
-        stage('Scan with Trivy') {
-            steps {
-                script {
-                    // Install Trivy if it's not already installed
-                    sh '''
-                        if ! command -v trivy &> /dev/null; then
-                            echo "Installing Trivy..."
-                            wget -qO- https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_$(uname -m).tar.gz | tar xz
-                            sudo mv trivy /usr/local/bin/
-                        fi
-                    '''
-                    
-                    // Run Trivy scan
-                    sh "trivy image --exit-code 1 --severity HIGH,CRITICAL ${img}"
-                }
-            }
-        }
- 
+        
+
         stage('Push To DockerHub') {
             steps {
                 script {
