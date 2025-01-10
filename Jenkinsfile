@@ -40,12 +40,18 @@ pipeline {
         }
                    
         stage('Deploy') {
-           steps {
-                sh label: '', script: "docker run -d --name ${JOB_NAME} -p 6000:6000 ${img}"
-          }
+    steps {
+        script {
+            // Stop and remove any existing container with the same name
+            sh """
+                docker ps -a -q --filter "name=${JOB_NAME}" | grep -q . && docker stop ${JOB_NAME} && docker rm ${JOB_NAME} || true
+            """
+            
+            // Run the new container
+            sh "docker run -d --name ${JOB_NAME} -p 5000:5000 ${img}"
         }
- 
-      }
+    }
+}
         post {
             always {
                 echo 'Pipeline execution completed.'
