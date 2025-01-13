@@ -25,10 +25,18 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Scan Docker Image with Trivy') {
             steps {
-                sh 'trivy image $DOCKER_IMAGE'
+                script {
+                    // Set the Trivy cache directory within the workspace
+                    def trivyCacheDir = "${env.WORKSPACE}/trivy-cache"
+                    sh """
+                        mkdir -p ${trivyCacheDir}
+                        export TRIVY_CACHE_DIR=${trivyCacheDir}
+                        trivy image ${img}
+                    """
+                }
             }
         }
 
@@ -41,7 +49,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Deploy') {
             steps {
                 script {
