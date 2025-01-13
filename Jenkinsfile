@@ -27,18 +27,20 @@ pipeline {
         }
 
         stage('Scan Docker Image with Trivy') {
-            steps {
-                script {
-                    // Set the Trivy cache directory within the workspace
-                    def trivyCacheDir = "${env.WORKSPACE}/trivy-cache"
-                    sh """
-                        mkdir -p ${trivyCacheDir}
-                        export TRIVY_CACHE_DIR=${trivyCacheDir}
-                        trivy image ${img}
-                    """
-                }
-            }
+    steps {
+        script {
+            def trivyCacheDir = "${env.WORKSPACE}/trivy-cache"
+            sh """
+                mkdir -p ${trivyCacheDir}
+                docker run --rm \
+                    -v ${trivyCacheDir}:/root/.cache/trivy \
+                    -v /var/run/docker.sock:/var/run/docker.sock \
+                    aquasec/trivy:latest image ${img}
+            """
         }
+    }
+}
+
 
         stage('Push To DockerHub') {
             steps {
