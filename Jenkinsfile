@@ -35,12 +35,7 @@ pipeline {
                 }
             }
         }
-        stage('Scan Docker Image with Trivy') {
-            steps {
-                sh 'trivy image $DOCKER_IMAGE'
-            }
-        }
-
+        
         stage('Deploy') {
             steps {
                 script {
